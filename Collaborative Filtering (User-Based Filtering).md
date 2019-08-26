@@ -55,7 +55,7 @@ mc_user_item_matrix <- function(d){
 #### Create cosine similarity matrix 
 
 ```{r}
-# The following function takes the mean-centred user-item matrix as input and outputs the cosine similarity computed along rows of the matrix 
+# The following function takes the mean-centred user-item matrix as input and outputs the cosine similarity matrix 
 cossim <- function(mc_ui_mat){
   # Replace NA in user-item matrix with 0
   mc_ui_mat[is.na(mc_ui_mat)] <- 0
@@ -65,6 +65,7 @@ cossim <- function(mc_ui_mat){
   rownames(cs_mat) <- rownames(mc_ui_mat)
   colnames(cs_mat) <- rownames(mc_ui_mat)
   
+  # Compute cosine similarity along rows of the matrix 
   for (i in 1:nrow(mc_ui_mat)) {
     for (j in i:nrow(mc_ui_mat)) {
       if (i==j){
