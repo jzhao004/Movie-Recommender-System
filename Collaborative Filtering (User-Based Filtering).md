@@ -41,10 +41,13 @@ user_item_matrix <- function(d){
 ```{r}
 # The following function takes ratings data as input and outputs the mean-centred user-item matrix
 mc_user_item_matrix <- function(d){
+  # Generate user-item matrix
   ui_mat <- user_item_matrix(d)
+  
   # Calculate mean rating for each user
   mratings <- rowMeans(ui_mat, na.rm=T)
-  # Calculate mean-centred ratings
+  
+  # Create mean-centred user-item matrix
   mc_ui_mat <- ui_mat - mratings
   rownames(mc_ui_mat) <- rownames(ui_mat)
   colnames(mc_ui_mat) <- colnames(ui_mat)
@@ -73,6 +76,7 @@ cossim <- function(mc_ui_mat){
       } else { 
         num <- mc_ui_mat[i,] %*% mc_ui_mat[j,]
         denom <- sqrt(mc_ui_mat[i,] %*% mc_ui_mat[i,]) * sqrt(mc_ui_mat[j,] %*% mc_ui_mat[j,])
+        
         if(denom != 0){
           cs_mat[i, j] <- num / denom
           cs_mat[j, i] <- num / denom
@@ -100,6 +104,7 @@ predicted_ratings_ubf <- function(d, userId) {
   
   # Identify unrated movies of target user
   unrated_movies <- names(ui_mat[userId,][is.na(ui_mat[userId,])])
+  
   # Predict ratings for unrated movies of target user
   pratings <- rep(0, length(unrated_movies))
   names(pratings) <- unrated_movies
@@ -111,6 +116,7 @@ predicted_ratings_ubf <- function(d, userId) {
     if (length(susers > 0)) {
       # Find cosine similarity of identified users to target user
       cossim_susers <- cs_mat[userId, c(susers)]
+      
       # Consider only the 10 nearest neighbours with positive cosine similarity values (If less than 10, include all)
       nearest_neighbours <- names(sort(cossim_susers[cossim_susers > 0], decreasing=T)[1:min(length(cossim_susers[cossim_susers > 0]), 10)])
      
@@ -131,6 +137,7 @@ predicted_ratings_ubf <- function(d, userId) {
 recommendations_ubf <- function(d, userId){
   # Generate predicted ratings 
   pratings <- predicted_ratings_ubf(d, userId)
+  
   # Identify top 5 movies with positive predicted ratings (If less than 5, include all)
   top5_pratings <- sort(pratings[pratings>0], decreasing=T)[1:min(5,length(pratings[pratings>0]))]
   recommendations <- names(top5_pratings)
