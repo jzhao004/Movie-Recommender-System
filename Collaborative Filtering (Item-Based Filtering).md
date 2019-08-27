@@ -41,7 +41,9 @@ user_item_matrix <- function(d){
 ```{r}
 # The following function takes ratings data as input and outputs the mean-centred user-item matrix
 mc_user_item_matrix <- function(d){
+  # Generate user-item matrix
   ui_mat <- user_item_matrix(d)
+  
   # Calculate mean rating for each user
   mratings <- rowMeans(ui_mat, na.rm=T)
   
