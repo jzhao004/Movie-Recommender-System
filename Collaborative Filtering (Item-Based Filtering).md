@@ -1,4 +1,4 @@
-### Load Required Packages 
+#### Load Required Packages 
 
 ```{r}
 require(quanteda)
@@ -6,15 +6,15 @@ library(data.table)
 library(caret)
 ```
 
-### Import data 
+#### Import data 
 ```{r}
 ratings <- read.csv("ratings.csv")
 movies <- read.csv("movies.csv")
 ```
 
-### Data analysis
+#### Data analysis
   
-#### Create user-item matrix
+##### Create user-item matrix
 
 ```{r}
 # The following function takes ratings data as input and outputs the user-item matrix
@@ -36,7 +36,7 @@ user_item_matrix <- function(d){
 
 ```
 
-#### Create mean-centred user-item matrix 
+##### Create mean-centred user-item matrix 
 
 ```{r}
 # The following function takes ratings data as input and outputs the mean-centred user-item matrix
@@ -55,7 +55,7 @@ mc_user_item_matrix <- function(d){
 }
 ```
 
-#### Create cosine similarity matrix 
+##### Create cosine similarity matrix 
 
 ```{r}
 # The following function takes the mean-centred user-item matrix as input and outputs the cosine similarity matrix 
@@ -91,7 +91,7 @@ cossim <- function(mc_ui_mat){
 }
 ```
 
-#### Predict ratings using item-based filtering
+##### Predict ratings using item-based filtering
 
 ```{r}
 # The function predicted_ratings_ibf takes data and user id as input and outputs predicted ratings for all unrated movies of target user using item-based filtering
@@ -130,7 +130,7 @@ predicted_ratings_ibf <- function(d, userId) {
 }
 ```
 
-#### Make recommendations using item-based filtering
+##### Make recommendations using item-based filtering
 
 ```{r}
 # The following function takes ratings data and target user as input and outputs top 5 recommended movies for target user using item based filtering 
