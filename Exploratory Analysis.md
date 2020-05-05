@@ -1,4 +1,4 @@
-### Load Required Libraries 
+#### Load Required Libraries 
 
 ```{r}
 library(data.table)
@@ -9,7 +9,7 @@ library(hexbin)
 require(quanteda)
 ```
 
-### Import Data 
+#### Import Data 
 
 ```{r}
 movies <- read.csv("movies.csv")
@@ -23,8 +23,8 @@ tdata <- merge(tags, movies, by="movieId")
 genres <- c("action","adventure","animation","children","comedy","crime","documentary","drama","fantasy","film.noir","horror","imax","musical","mystery","romance","sci.fi","thriller","war","western")
 ```
 
-### Data Analysis 
-#### What are the most common words in movie titles? 
+#### Data Analysis 
+##### What are the most common words in movie titles? 
 
 ```{r}
 # Create corpus for movie titles
@@ -36,7 +36,7 @@ docvars(title_dfm, field = "MovieId") <- movies$movieId
 textplot_wordcloud(title_dfm, min_size = 0.5, max_size = 5, max_words = 150)
 ```
 
-#### What are the percentages of movies by genre? 
+##### What are the percentages of movies by genre? 
 
 ```{r}
 # Calculate no. of unique genres
@@ -51,9 +51,9 @@ data.frame(genre=pmovies_genre$genre, no_of_movies = nmovies_genre, percentage=p
 ggplot(pmovies_genre, aes(x=reorder(genre,percentage), y=percentage)) + geom_bar(stat="identity", width=1, color="black", alpha=0.5) + coord_flip() + labs(title="Percentage of Movies by Genre", x="Genre", y="Percentage")
 ```
 
-There are 19 genres altogether with Drama, Comedy, and Thriller being the top 3 genres in terms of total no. of movies produced. 
+###### There are 19 genres altogether with Drama, Comedy, and Thriller being the top 3 genres by total no. of movies produced. 
 
-#### How many movies did users rate on average? 
+##### How many movies did users rate on average? 
 
 ```{r}
 # Calculate summarys statistics of no. of movies rated per user
@@ -61,9 +61,9 @@ summary(c(table(ratings$userId)))
 paste("Standard Deviation", round(sd(c(table(ratings$userId))),1))
 ```
 
-Users on average rated 165.3 movies, with a standard deviation of 269.5. The median number of movies rated is 70.5. 
+###### Users on average rated 165.3 movies, with a standard deviation of 269.5. The median number of movies rated is 70.5. 
 
-#### How are ratings distributed? 
+##### How are ratings distributed? 
 
 ```{r}
 # Calculate summary statistics of ratings
@@ -74,9 +74,9 @@ paste("Standard Deviation", round(sd(ratings$rating),3))
 ggplot(ratings, aes(x=rating)) + geom_histogram(binwidth=0.5, colour="black", alpha=0.5) + scale_x_continuous(breaks=sort(unique(ratings$rating))) + labs(title="Distribution of ratings", x="Rating", y="Count") +  theme(legend.position = "none") 
 ```
 
-The average rating for each movie is 3.5 with a standard deviation of 1.043. The distribution of ratings is skewed to the right, suggesting that users, on average, tend to rate on the higher end of the five-star scale.
+###### The average rating for each movie is 3.5 with a standard deviation of 1.043. The distribution of ratings is skewed to the right, suggesting that users, on average, tend to rate on the higher end of the five-star scale.
 
-#### Do ratings vary by year of release? 
+##### Do ratings vary by year of release? 
 
 ```{r}
 # Calculate summary statistics for ratings by year
@@ -86,9 +86,9 @@ srating_year <- aggregate(ratings$rating, list(year(ratings$timestamp)), summary
 ggplot(srating_year,aes(x=Group.1,y=x[,'Mean'])) + geom_errorbar(aes(ymin=x[,'1st Qu.'], ymax=x[,'3rd Qu.']), width=.3, color="grey") + geom_point() + geom_line() + ylim(0,5.0) + scale_x_continuous(breaks=sort(unique(year(ratings$timestamp)))) + theme(axis.text.x = element_text(angle=90, hjust=1)) + labs(title="Mean ratings by year", x="Year", y="Mean rating")
 ```
 
-Average ratings are fairly consistent between 3 and 4 across the years
+###### Average ratings are fairly consistent between 3 and 4 across the years
 
-#### Do ratings vary by age of movies?
+##### Do ratings vary by age of movies?
 
 ```{r}
 # Calculate average ratings by year of release 
@@ -104,9 +104,9 @@ ggplot(rdata, aes(x=ageofmovie, y=rating)) + stat_summary(fun.y="mean",geom="poi
 round(cor(rdata$ageofmovie,rdata$rating),4)
 ```
 
-There is a very weak positive correlation between average ratings and age of movies (R=0.084). As movies age, there are greater variabilities in average ratings.
+###### There is a very weak positive correlation between average ratings and age of movies (R=0.084). As movies age, there are greater variabilities in average ratings.
 
-#### Do ratings vary across users?
+##### Do ratings vary across users?
 
 ```{r}
 # Calculate average ratings by user
@@ -116,9 +116,9 @@ mrating_user <- aggregate(rdata$rating, list(rdata$userId), mean)
 ggplot(rdata, aes(x=userId, y=rating)) + stat_summary(fun.y="mean",geom="point",alpha=0.7) + ylim(0,5) + labs(title="Average Ratings by User", x="User Id", y="Mean Rating")  
 ```
 
-Average ratings are fairly consistent between 2.5 and 4.5 across users
+###### Average ratings are fairly consistent between 2.5 and 4.5 across users
 
-#### Do ratings vary by genre? 
+##### Do ratings vary by genre? 
 
 ```{r}
 # Convert all 0 values in one hot encoded genre data to NA 
@@ -132,9 +132,9 @@ mrating_genre <- data.frame(genre=names(r), mrating=colMeans(rdata$rating * r, n
 ggplot(mrating_genre, aes(x=genre, y=mrating)) + geom_bar(stat="identity",alpha=0.7) + ylim(0,5) + theme(axis.text.x=element_text(angle=90, hjust=1)) + labs(title="Average Ratings by Genre", x="Genre", y="Mean Rating")
 ```
 
-Average ratings are fairly consistent between 3 and 4 across genres
+###### Average ratings are fairly consistent between 3 and 4 across genres
 
-#### Do ratings vary by no. of ratings received per movie? 
+##### Do ratings vary by no. of ratings received per movie? 
 
 ```{r}
 # Calculate no. of ratings for each movie
@@ -152,4 +152,4 @@ nmrating <- merge(nrating, mrating, by="movieId")
 ggplot(nmrating, aes(nrating,mrating)) + stat_binhex(bins=35, alpha=0.7) + stat_smooth(method="lm", color="black", size=1,  se=F) + scale_fill_distiller(palette = "Spectral") + labs(title="Average Ratings against No. of Ratings", x="No. of Ratings", y="Mean Rating") + scale_fill_gradient(name="Count",high="darkturquoise",low="darkgrey")
 ```
   
-There is a positive relationship between the total number of ratings a movie received and its average rating.
+###### There is a positive relationship between the total number of ratings a movie received and its average rating.
