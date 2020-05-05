@@ -1,4 +1,4 @@
-### Load Required Libraries 
+#### Load Required Libraries 
 
 ```{r}
 library(data.table)
@@ -6,7 +6,7 @@ library(caret)
 library(tidyverse)
 ```
 
-### Download Data from MovieLens Website 
+#### Download Data from MovieLens Website 
 
 ```{r}
 dl <- tempfile()
@@ -17,9 +17,9 @@ tags <- data.frame(read.csv(unzip(dl,"ml-latest-small/tags.csv")))
 links <- data.frame(read.csv(unzip(dl,"ml-latest-small/links.csv")))
 ```
 
-### Clean Data 
+#### Clean Data 
 
-#### Movies dataset 
+##### Movies dataset 
 
 ```{r}
 # Separate movie title and year of release of movie
@@ -46,7 +46,7 @@ movies$comedy[movies["(no genres listed)"]==1] <- 1
 movies <- subset(movies,select=-c(genres,`(no genres listed)`))
 ```
 
-#### Ratings dataset 
+##### Ratings dataset 
 
 ```{r}
 # Onehot encode genre data 
@@ -68,7 +68,7 @@ ratings$timestamp <- as.POSIXct(ratings$timestamp, origin="1970-01-01")
 apply(ratings,2,function(x){sum(is.na(x))})
 ```
 
-#### Tags dataset 
+##### Tags dataset 
 
 ```{r}
 # Reformat timestamp 
@@ -87,7 +87,7 @@ tags <- compiled_tags
 apply(tags,2,function(x){sum(is.na(x))})
 ```
 
-### Export data 
+#### Export data 
 
 ```{r}
 write.csv(movies, file = "movies.csv", row.names = F)
